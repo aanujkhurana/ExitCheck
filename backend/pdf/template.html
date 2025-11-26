@@ -1,0 +1,47 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Exit Report</title>
+  <style>
+    body{ font-family: Arial, sans-serif; padding:20px; }
+    .header{ text-align:center; margin-bottom:20px; }
+    .room{ margin-bottom:16px; page-break-inside: avoid; }
+    img { max-width: 240px; height: auto; margin-right:8px; }
+    .photos { display:flex; flex-wrap:wrap; gap:8px; }
+    .meta { font-size:12px; color:#555; margin-bottom:12px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Exit Condition Report</h1>
+  </div>
+  <div class="meta">
+    <strong>Address:</strong> <span id="address"></span><br/>
+    <strong>Move-in:</strong> <span id="moveIn"></span> | <strong>Move-out:</strong> <span id="moveOut"></span><br/>
+    <strong>Generated:</strong> <span id="generated"></span>
+  </div>
+  <div id="rooms"></div>
+
+  <script>
+    const report = JSON.parse('{{REPORT_JSON}}');
+    document.getElementById('address').innerText = report.address || '';
+    document.getElementById('moveIn').innerText = report.moveIn || '';
+    document.getElementById('moveOut').innerText = report.moveOut || '';
+    document.getElementById('generated').innerText = new Date().toLocaleString();
+
+    const container = document.getElementById('rooms');
+    (report.rooms || []).forEach(r=>{
+      const div = document.createElement('div');
+      div.className = 'room';
+      div.innerHTML = `<h3>${r.name}</h3>
+        <div><strong>Condition:</strong> ${r.condition || ''}</div>
+        <div><strong>Notes:</strong> ${r.notes || ''}</div>
+        <div class="photos">${(r.photos||[]).map(p=>`<img src="${p}" />`).join('')}</div>
+      `;
+      container.appendChild(div);
+    });
+  </script>
+</body>
+</html>
