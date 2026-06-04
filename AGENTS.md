@@ -40,11 +40,11 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 8. ✅ Add frontend tests (Jest + validation/logic tests)
 9. ✅ Add a GitHub CI workflow for tests + lint
 
-### Phase 3 — Production Features
-10. Implement photo upload limit enforcement (free tier: 3 photos)
-11. Integrate Stripe for payment/subscription
-12. Add local filesystem upload option for dev/testing (configurable via env)
-13. Add proper loading indicators and toast notifications
+### Phase 3 — Production Features ✅
+10. ✅ Implement photo upload limit enforcement (free tier: 3 photos)
+11. ✅ Integrate Stripe for payment/subscription
+12. ✅ Add local filesystem upload option for dev/testing (configurable via env)
+13. ✅ Add proper loading indicators and toast notifications
 
 ### Phase 4 — Release
 14. Write comprehensive README with screenshots and usage guide
