@@ -46,11 +46,11 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 12. ✅ Add local filesystem upload option for dev/testing (configurable via env)
 13. ✅ Add proper loading indicators and toast notifications
 
-### Phase 4 — Release
-14. Write comprehensive README with screenshots and usage guide
-15. Configure Expo build (EAS) for iOS/Android
-16. Deploy backend (Render, Railway, or EC2)
-17. Set up monitoring and error tracking (Sentry)
+### Phase 4 — Release ✅
+14. ✅ Write comprehensive README with screenshots and usage guide
+15. ✅ Configure Expo build (EAS) for iOS/Android
+16. ✅ Deploy backend (Render, Railway, or EC2)
+17. ✅ Set up monitoring and error tracking (Sentry)
 
 ## Conventions
 
