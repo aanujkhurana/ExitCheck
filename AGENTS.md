@@ -34,11 +34,11 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 4. ✅ Add basic validation to forms (required fields, email format, etc.)
 5. ✅ Add error handling UI (alerts, loading states, retry)
 
-### Phase 2 — Quality
-6. Set up ESLint + Prettier for both frontend and backend
-7. Add backend tests (Jest + Supertest) for all 6 API routes
-8. Add frontend tests (Jest + React Native Testing Library)
-9. Add a GitHub CI workflow for tests + lint
+### Phase 2 — Quality ✅
+6. ✅ Set up ESLint + Prettier for both frontend and backend
+7. ✅ Add backend tests (Jest + Supertest) for all 6 API routes
+8. ✅ Add frontend tests (Jest + validation/logic tests)
+9. ✅ Add a GitHub CI workflow for tests + lint
 
 ### Phase 3 — Production Features
 10. Implement photo upload limit enforcement (free tier: 3 photos)
