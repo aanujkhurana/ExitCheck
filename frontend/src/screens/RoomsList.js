@@ -1,7 +1,6 @@
 
 import React, {useEffect, useState} from 'react';
-import { View, Text, Button, FlatList, TouchableOpacity } from 'react-native';
-import axios from 'axios';
+import { View, Text, Button, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { API_URL } from '../config';
 
 const defaultRooms = ['Kitchen','Living room','Bedroom 1','Bedroom 2','Bathroom','Balcony'];
@@ -9,6 +8,7 @@ const defaultRooms = ['Kitchen','Living room','Bedroom 1','Bedroom 2','Bathroom'
 export default function RoomsList({route, navigation}){
   const { reportId } = route.params;
   const [rooms, setRooms] = useState([]);
+  const [customRoomName, setCustomRoomName] = useState('');
 
   useEffect(()=>{
     setRooms(defaultRooms.map(name=>({ name, id: name })));
@@ -16,9 +16,31 @@ export default function RoomsList({route, navigation}){
 
   const goRoom = (room) => navigation.navigate('RoomDetail', { reportId, room });
 
+  const addCustomRoom = () => {
+    const name = customRoomName.trim();
+    if (!name) {
+      Alert.alert('Error', 'Please enter a room name');
+      return;
+    }
+    if (rooms.find(r => r.name.toLowerCase() === name.toLowerCase())) {
+      Alert.alert('Error', 'Room already exists');
+      return;
+    }
+    setRooms([...rooms, { name, id: `custom-${Date.now()}` }]);
+    setCustomRoomName('');
+  };
+
   return (
     <View style={{padding:16}}>
-      <Button title="Add custom room" onPress={()=>{/* quick hack: implement later */}} />
+      <View style={{flexDirection:'row', marginBottom:12}}>
+        <TextInput
+          value={customRoomName}
+          onChangeText={setCustomRoomName}
+          placeholder="Enter custom room name"
+          style={{borderWidth:1, flex:1, marginRight:8, paddingHorizontal:8}}
+        />
+        <Button title="Add custom room" onPress={addCustomRoom} />
+      </View>
       <FlatList
         data={rooms}
         keyExtractor={i=>i.id}
