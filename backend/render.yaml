@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: exitcheck-api
+    env: node
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false
+      - key: STORAGE_TYPE
+        value: local
+      - key: FRONTEND_URL
+        sync: false

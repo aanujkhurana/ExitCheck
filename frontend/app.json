@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "ExitCheck",
+    "slug": "exitcheck",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.exitcheck.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "ExitCheck uses the camera to take photos of rooms for exit condition reports."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.exitcheck.app",
+      "permissions": ["CAMERA"]
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "ExitCheck needs camera access to take room photos."
+        }
+      ]
+    ]
+  }
+}
