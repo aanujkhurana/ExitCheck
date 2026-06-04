@@ -34,6 +34,23 @@ async function saveFile(filePath, key) {
   return `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 4000}`}/uploads/${key}`;
 }
 
+async function saveBuffer(buffer, key) {
+  if (STORAGE_TYPE === 's3') {
+    const params = {
+      Bucket: process.env.AWS_S3_BUCKET,
+      Key: key,
+      Body: buffer,
+      ACL: 'public-read',
+    };
+    const data = await s3.upload(params).promise();
+    return data.Location;
+  }
+  const dest = path.join(UPLOADS_DIR, key);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.writeFileSync(dest, buffer);
+  return `${process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 4000}`}/uploads/${key}`;
+}
+
 async function generatePdf(report) {
   const template = fs.readFileSync(path.join(__dirname, '../pdf', 'template.html'), 'utf8');
   const html = template.replace('{{REPORT_JSON}}', JSON.stringify(report));
@@ -62,4 +79,4 @@ async function sendEmailWithAttachment(to, pdfUrl) {
   });
 }
 
-module.exports = { saveFile, generatePdf, sendEmailWithAttachment };
+module.exports = { saveFile, saveBuffer, generatePdf, sendEmailWithAttachment };

@@ -1,9 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 const multer = require('multer');
 const Report = require('../models/Report');
-const upload = multer({ dest: '/tmp/uploads' });
-const { saveFile, generatePdf, sendEmailWithAttachment } = require('../utils/helpers');
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) return cb(null, true);
+    cb(new Error('Only image files allowed'));
+  },
+});
+const { saveBuffer, generatePdf, sendEmailWithAttachment } = require('../utils/helpers');
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? require('stripe')(process.env.STRIPE_SECRET_KEY)
@@ -11,17 +19,19 @@ const stripe = process.env.STRIPE_SECRET_KEY
 
 // Create report
 router.post('/', async (req, res) => {
-  const r = new Report(req.body);
+  const { address, moveIn, moveOut, agentEmail } = req.body;
+  const r = new Report({ address, moveIn, moveOut, agentEmail });
   await r.save();
-  res.json(r);
+  res.status(201).json(r);
 });
 
 // Add room
 router.post('/:id/rooms', async (req, res) => {
   const report = await Report.findById(req.params.id);
-  report.rooms.push(req.body);
+  const { name, notes, condition, photos } = req.body;
+  report.rooms.push({ name, notes, condition, photos });
   await report.save();
-  res.json(report);
+  res.status(201).json(report);
 });
 
 // Upload photo
@@ -38,9 +48,10 @@ router.post('/:id/photos', upload.single('photo'), async (req, res) => {
     });
   }
 
-  const filePath = req.file.path;
-  const key = `photos/${Date.now()}-${req.file.originalname}`;
-  const url = await saveFile(filePath, key);
+  const ext = path.extname(req.file.originalname).toLowerCase();
+  const safeName = `${Date.now()}${ext || '.jpg'}`;
+  const key = `photos/${safeName}`;
+  const url = await saveBuffer(req.file.buffer, key);
   res.json({ url });
 });
 

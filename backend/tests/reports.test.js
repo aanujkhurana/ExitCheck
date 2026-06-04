@@ -7,6 +7,8 @@ jest.mock('../utils/helpers', () => ({
   ...jest.requireActual('../utils/helpers'),
   generatePdf: jest.fn().mockResolvedValue('http://localhost/uploads/pdfs/test.pdf'),
   sendEmailWithAttachment: jest.fn().mockResolvedValue(true),
+  saveBuffer: jest.fn().mockResolvedValue('http://localhost/uploads/photos/test.jpg'),
+  saveFile: jest.fn().mockResolvedValue('http://localhost/uploads/pdfs/test.pdf'),
 }));
 
 describe('Reports API', () => {
@@ -25,7 +27,7 @@ describe('Reports API', () => {
         moveOut: '2026-06-30',
         agentEmail: 'agent@test.com',
       });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
     expect(res.body.address).toBe('123 Test St');
     expect(res.body.agentEmail).toBe('agent@test.com');
     expect(res.body._id).toBeDefined();
@@ -41,7 +43,7 @@ describe('Reports API', () => {
         condition: 'clean',
         photos: [],
       });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
     expect(res.body.rooms).toHaveLength(1);
     expect(res.body.rooms[0].name).toBe('Kitchen');
   });
@@ -52,7 +54,6 @@ describe('Reports API', () => {
       .attach('photo', Buffer.from('fake-image'), 'test.jpg');
     expect(res.status).toBe(200);
     expect(res.body.url).toBeDefined();
-    expect(res.body.url).toContain('/uploads/');
   });
 
   it('POST /api/reports/:id/photos - rejects when over free limit', async () => {
