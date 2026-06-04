@@ -106,7 +106,7 @@ describe('Reports API', () => {
     // re-add a room first since the previous one was used for photos
     await request(app)
       .post(`/api/reports/${reportId}/rooms`)
-      .send({ name: 'Bedroom', condition: 'good' });
+      .send({ name: 'Bedroom', condition: 'fair' });
     const report = await Report.findById(reportId);
     const roomId = report.rooms[1]._id.toString();
 

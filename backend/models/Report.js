@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
 
 const RoomSchema = new mongoose.Schema({
-  name: String,
-  notes: String,
-  condition: String,
-  photos: [String],
+  name: { type: String, required: true, trim: true },
+  notes: { type: String, default: '' },
+  condition: { type: String, enum: ['clean', 'fair', 'poor', 'damaged', ''] },
+  photos: { type: [String], default: [] },
   createdAt: { type: Date, default: Date.now },
 });
 
 const ReportSchema = new mongoose.Schema({
-  address: String,
-  moveIn: String,
-  moveOut: String,
-  agentEmail: String,
-  rooms: [RoomSchema],
+  address: { type: String, required: true, trim: true },
+  moveIn: { type: String, required: true },
+  moveOut: { type: String, required: true },
+  agentEmail: { type: String, trim: true, lowercase: true },
+  rooms: { type: [RoomSchema], default: [] },
   paid: { type: Boolean, default: false },
-  stripeSessionId: String,
+  stripeSessionId: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 
