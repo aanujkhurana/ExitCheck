@@ -4,7 +4,7 @@ const router = express.Router();
 const multer = require('multer');
 const Report = require('../models/Report');
 const upload = multer({ dest: '/tmp/uploads' });
-const { uploadToS3, generatePdf, sendEmailWithAttachment } = require('../utils/helpers');
+const { saveFile, generatePdf, sendEmailWithAttachment } = require('../utils/helpers');
 
 // Create report
 router.post('/', async (req,res)=>{
@@ -26,7 +26,7 @@ router.post('/:id/photos', upload.single('photo'), async (req,res)=>{
   // simple example: upload to s3 and return url
   const filePath = req.file.path;
   const key = `photos/${Date.now()}-${req.file.originalname}`;
-  const url = await uploadToS3(filePath, key);
+  const url = await saveFile(filePath, key);
   res.json({ url });
 });
 
