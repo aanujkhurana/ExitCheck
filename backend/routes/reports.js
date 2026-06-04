@@ -25,9 +25,18 @@ router.post('/', async (req, res) => {
   res.status(201).json(r);
 });
 
+// Lookup reports by agent email
+router.get('/', async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ message: 'email query param required' });
+  const reports = await Report.find({ agentEmail: email }).sort({ createdAt: -1 });
+  res.json(reports);
+});
+
 // Add room
 router.post('/:id/rooms', async (req, res) => {
   const report = await Report.findById(req.params.id);
+  if (!report) return res.status(404).json({ message: 'Report not found' });
   const { name, notes, condition, photos } = req.body;
   report.rooms.push({ name, notes, condition, photos });
   await report.save();

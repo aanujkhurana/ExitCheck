@@ -34,6 +34,14 @@ describe('Reports API', () => {
     reportId = res.body._id;
   });
 
+  it('GET /api/reports/?email= - looks up reports by agent email', async () => {
+    const res = await request(app).get(`/api/reports/?email=agent@test.com`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBeGreaterThanOrEqual(1);
+    expect(res.body[0].address).toBe('123 Test St');
+  });
+
   it('POST /api/reports/:id/rooms - adds a room', async () => {
     const res = await request(app)
       .post(`/api/reports/${reportId}/rooms`)
