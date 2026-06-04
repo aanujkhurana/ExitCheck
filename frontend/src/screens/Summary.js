@@ -132,6 +132,7 @@ export default function Summary({ route, navigation }) {
         onPress={email}
         disabled={emailing || !report.agentEmail}
       />
+      <Button title="Export JSON" onPress={() => Linking.openURL(`${API_URL}/reports/${reportId}/export`)} />
       <View style={{ marginTop: 24 }}>
         <Button title="Delete report" onPress={remove} color="#c00" />
       </View>

@@ -92,6 +92,15 @@ router.delete('/:id/rooms/:roomId', async (req, res) => {
   res.json(report);
 });
 
+// Export report as JSON
+router.get('/:id/export', async (req, res) => {
+  const report = await Report.findById(req.params.id);
+  if (!report) return res.status(404).json({ message: 'Report not found' });
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', `attachment; filename="${report._id}.json"`);
+  res.json(report);
+});
+
 // Generate PDF
 router.post('/:id/generate', async (req, res) => {
   const report = await Report.findById(req.params.id);

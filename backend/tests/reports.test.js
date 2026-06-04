@@ -86,6 +86,14 @@ describe('Reports API', () => {
     expect(res.body.address).toBe('456 Oak Ave');
   });
 
+  it('GET /api/reports/:id/export - exports report as JSON', async () => {
+    const res = await request(app).get(`/api/reports/${reportId}/export`);
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch(/json/);
+    expect(res.body.address).toBe('456 Oak Ave');
+    expect(res.body.rooms).toBeDefined();
+  });
+
   it('DELETE /api/reports/:id/rooms/:roomId - deletes a room', async () => {
     // re-add a room first since the previous one was used for photos
     await request(app)
