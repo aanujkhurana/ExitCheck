@@ -33,17 +33,17 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 - **Rate limiting** — `express-rate-limit` (100 req/15min general, 10 req/15min auth)
 - **Helmet** — Security headers (XSS, clickjacking, etc.)
 - **Health check** — `GET /api/health`
+- **Mongoose schema validation** — required fields on Report/Room, enum on condition
+- **Compression** — gzip/brotli middleware
+- **Graceful shutdown** — SIGTERM/SIGINT handler for clean MongoDB disconnect
+- **Stripe webhook** — idempotency (in-memory dedup) + error handling
 
 ### Missing / Known Issues
 - **No per-user auth** — PIN is app-wide, no user accounts
-- **Dependency vulnerabilities** — `npm audit` shows 8 issues (2 moderate, 6 high)
-- **No Mongoose schema validation** — fields are free-text, no enum validation on condition
+- **Dependency vulnerabilities** — `npm audit` shows 7 issues (2 moderate via aws-sdk, 5 high via puppeteer transitive deps)
 - **No TypeScript** — plain JS throughout
 - **No end-to-end tests** — only backend API + frontend logic tests
 - **No offline support** — requires network for all operations
-- **No compression** — no gzip/brotli middleware
-- **No graceful shutdown** — no SIGTERM handler for clean MongoDB disconnect
-- **Stripe webhook** — no retry/idempotency handling
 
 ## Conventions
 
