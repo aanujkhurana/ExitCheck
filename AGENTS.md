@@ -4,20 +4,19 @@
 
 ExitCheck is a **React Native (Expo) + Express** mobile app for generating rental property exit condition reports with PDF export. Users inspect rooms, take photos, record notes, and email a PDF to the agent.
 
-- **Frontend**: `frontend/` — Expo/React Native (4 screens: Onboarding, RoomsList, RoomDetail, Summary)
+- **Frontend**: `frontend/` — Expo/React Native (5 screens: Pin, Onboarding, RoomsList, RoomDetail, Summary)
 - **Backend**: `backend/` — Express + Mongoose + Puppeteer + Nodemailer + S3
-- **State**: Phase 1 complete (Jun 2026). Backend deps installed, local storage fallback, custom rooms, validation, error handling all implemented.
+- **State**: Post initial release. All 4 original phases complete. Additional production hardening in progress.
 
 ## Current State
 
 ### Implemented
-- Backend: Full CRUD API (6 routes), Mongoose schema, Puppeteer PDF generation, S3/local storage upload, Nodemailer email
+- Backend: Full CRUD API (9 routes + auth), Mongoose schema, Puppeteer PDF generation, S3/local storage upload, Nodemailer email
 - Frontend: Navigation stack, camera integration via `expo-image-picker`, forms for all screens, PDF generation + email buttons
 - **Custom room** — Text input + "Add custom room" button with duplicate/empty validation
 - **Form validation** — Onboarding (required fields, date format YYYY-MM-DD, email format), RoomDetail (condition required), RoomsList (custom room name)
 - **Error handling** — try/catch on all API calls, user-facing Alert messages, loading states with disabled buttons
 - **Local storage fallback** — `STORAGE_TYPE=local` env var; saves files to `backend/public/uploads/` when S3 not configured
-- **Backend deps installed**
 - **Photo upload limit** — 3 photo free tier with Stripe unlock
 - **Stripe payments** — Checkout session + webhook for unlimited photos
 - **Toast notifications** — `react-native-toast-message` for success feedback
@@ -25,38 +24,26 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 - **ESLint + Prettier** — Configured for both projects
 - **CI** — GitHub Actions workflow (lint + test)
 - **EAS** — Expo build config for iOS/Android
+- **Quick wins** — memoryStorage, field whitelisting, body limit, global error handler, `unhandledRejection` handler, RefreshControl, splash image, `API_URL` via `expo-constants`, Sentry DSN runtime-configurable, file validation
+- **Report edit/delete** — `PUT /:id`, `DELETE /:id`, `DELETE /:id/rooms/:roomId` + delete button on Summary
+- **Data export** — `GET /:id/export` returns JSON with download header + "Export JSON" button
+- **Email lookup** — `GET /?email=agent@...` returns all reports for that email
+- **Empty state** — `ListEmptyComponent` on RoomsList
+- **PIN auth** — `POST /api/auth/pin` endpoint + PinScreen, PIN set via `APP_PIN` env var
+- **Rate limiting** — `express-rate-limit` (100 req/15min general, 10 req/15min auth)
+- **Helmet** — Security headers (XSS, clickjacking, etc.)
+- **Health check** — `GET /api/health`
 
 ### Missing / Known Issues
-- **No auth** — no user accounts, anyone with report ID can access (critical)
-- **No tests** — zero test infrastructure
-- **No linting/formatting** — no ESLint, Prettier, or equivalent
-
-## Suggested Next Steps
-
-### Phase 1 — Local Dev Setup & Polish ✅
-1. ✅ `cd backend && npm install` to install backend deps
-2. ✅ Copy `.env.example` to `.env` and configure local MongoDB + S3 credentials (or add local filesystem fallback for testing)
-3. ✅ Implement the "Add custom room" button in `RoomsList.js`
-4. ✅ Add basic validation to forms (required fields, email format, etc.)
-5. ✅ Add error handling UI (alerts, loading states, retry)
-
-### Phase 2 — Quality ✅
-6. ✅ Set up ESLint + Prettier for both frontend and backend
-7. ✅ Add backend tests (Jest + Supertest) for all 6 API routes
-8. ✅ Add frontend tests (Jest + validation/logic tests)
-9. ✅ Add a GitHub CI workflow for tests + lint
-
-### Phase 3 — Production Features ✅
-10. ✅ Implement photo upload limit enforcement (free tier: 3 photos)
-11. ✅ Integrate Stripe for payment/subscription
-12. ✅ Add local filesystem upload option for dev/testing (configurable via env)
-13. ✅ Add proper loading indicators and toast notifications
-
-### Phase 4 — Release ✅
-14. ✅ Write comprehensive README with screenshots and usage guide
-15. ✅ Configure Expo build (EAS) for iOS/Android
-16. ✅ Deploy backend (Render, Railway, or EC2)
-17. ✅ Set up monitoring and error tracking (Sentry)
+- **No per-user auth** — PIN is app-wide, no user accounts
+- **Dependency vulnerabilities** — `npm audit` shows 8 issues (2 moderate, 6 high)
+- **No Mongoose schema validation** — fields are free-text, no enum validation on condition
+- **No TypeScript** — plain JS throughout
+- **No end-to-end tests** — only backend API + frontend logic tests
+- **No offline support** — requires network for all operations
+- **No compression** — no gzip/brotli middleware
+- **No graceful shutdown** — no SIGTERM handler for clean MongoDB disconnect
+- **Stripe webhook** — no retry/idempotency handling
 
 ## Conventions
 

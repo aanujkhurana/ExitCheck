@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
@@ -14,6 +15,7 @@ process.on('unhandledRejection', (err) => {
 });
 
 const app = express();
+app.use(helmet());
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 
 if (process.env.SENTRY_DSN) {
@@ -46,6 +48,8 @@ app.use(express.json({ limit: '1mb' }));
 app.use('/uploads', express.static('public/uploads'));
 
 app.use('/api/reports', reportsRouter);
+
+app.get('/api/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));
 
 if (process.env.SENTRY_DSN) {
   app.use(Sentry.Handlers.errorHandler());
