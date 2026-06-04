@@ -140,6 +140,8 @@ router.post('/:id/create-checkout-session', async (req, res) => {
 });
 
 // Stripe Webhook handler (exported separately for raw body handling)
+const processedEvents = new Set();
+
 router.stripeWebhook = async (req, res) => {
   if (!stripe) return res.status(503).json({ message: 'Stripe not configured' });
 
@@ -151,9 +153,21 @@ router.stripeWebhook = async (req, res) => {
     event = req.body;
   }
 
-  if (event.type === 'checkout.session.completed') {
-    const reportId = event.data.object.metadata.reportId;
-    await Report.findByIdAndUpdate(reportId, { paid: true });
+  if (processedEvents.has(event.id)) {
+    return res.json({ received: true, duplicate: true });
+  }
+  processedEvents.add(event.id);
+
+  try {
+    if (event.type === 'checkout.session.completed') {
+      const reportId = event.data.object.metadata.reportId;
+      const report = await Report.findByIdAndUpdate(reportId, { paid: true });
+      if (!report) {
+        console.error(`Webhook: report not found for session ${event.data.object.id}`);
+      }
+    }
+  } catch (err) {
+    console.error('Webhook error:', err);
   }
 
   res.json({ received: true });
