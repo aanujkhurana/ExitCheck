@@ -1,18 +1,16 @@
-
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Button, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
-import { API_URL } from '../config';
 
-const defaultRooms = ['Kitchen','Living room','Bedroom 1','Bedroom 2','Bathroom','Balcony'];
+const defaultRooms = ['Kitchen', 'Living room', 'Bedroom 1', 'Bedroom 2', 'Bathroom', 'Balcony'];
 
-export default function RoomsList({route, navigation}){
+export default function RoomsList({ route, navigation }) {
   const { reportId } = route.params;
   const [rooms, setRooms] = useState([]);
   const [customRoomName, setCustomRoomName] = useState('');
 
-  useEffect(()=>{
-    setRooms(defaultRooms.map(name=>({ name, id: name })));
-  },[]);
+  useEffect(() => {
+    setRooms(defaultRooms.map((name) => ({ name, id: name })));
+  }, []);
 
   const goRoom = (room) => navigation.navigate('RoomDetail', { reportId, room });
 
@@ -22,7 +20,7 @@ export default function RoomsList({route, navigation}){
       Alert.alert('Error', 'Please enter a room name');
       return;
     }
-    if (rooms.find(r => r.name.toLowerCase() === name.toLowerCase())) {
+    if (rooms.find((r) => r.name.toLowerCase() === name.toLowerCase())) {
       Alert.alert('Error', 'Room already exists');
       return;
     }
@@ -31,28 +29,31 @@ export default function RoomsList({route, navigation}){
   };
 
   return (
-    <View style={{padding:16}}>
-      <View style={{flexDirection:'row', marginBottom:12}}>
+    <View style={{ padding: 16 }}>
+      <View style={{ flexDirection: 'row', marginBottom: 12 }}>
         <TextInput
           value={customRoomName}
           onChangeText={setCustomRoomName}
           placeholder="Enter custom room name"
-          style={{borderWidth:1, flex:1, marginRight:8, paddingHorizontal:8}}
+          style={{ borderWidth: 1, flex: 1, marginRight: 8, paddingHorizontal: 8 }}
         />
         <Button title="Add custom room" onPress={addCustomRoom} />
       </View>
       <FlatList
         data={rooms}
-        keyExtractor={i=>i.id}
-        renderItem={({item})=>(
-          <TouchableOpacity onPress={()=>goRoom(item)}>
-            <View style={{padding:12,borderBottomWidth:1}}>
+        keyExtractor={(i) => i.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => goRoom(item)}>
+            <View style={{ padding: 12, borderBottomWidth: 1 }}>
               <Text>{item.name}</Text>
             </View>
           </TouchableOpacity>
         )}
       />
-      <Button title="Finish - View Summary" onPress={()=>navigation.navigate('Summary',{reportId})} />
+      <Button
+        title="Finish - View Summary"
+        onPress={() => navigation.navigate('Summary', { reportId })}
+      />
     </View>
   );
 }

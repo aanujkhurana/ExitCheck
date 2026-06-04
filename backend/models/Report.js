@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 
 const RoomSchema = new mongoose.Schema({
@@ -6,7 +5,7 @@ const RoomSchema = new mongoose.Schema({
   notes: String,
   condition: String,
   photos: [String],
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
 
 const ReportSchema = new mongoose.Schema({
@@ -15,7 +14,7 @@ const ReportSchema = new mongoose.Schema({
   moveOut: String,
   agentEmail: String,
   rooms: [RoomSchema],
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('Report', ReportSchema);

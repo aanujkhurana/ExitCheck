@@ -5,7 +5,9 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios"
+    "ios": "expo start --ios",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write \"**/*.js\" \"**/*.json\""
   },
   "dependencies": {
     "@react-navigation/stack": "^7.6.7",
@@ -15,5 +17,14 @@
     "react": "18.2.0",
     "react-native": "0.71.8",
     "react-navigation": "^4.4.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/eslint-parser": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "prettier": "^3.8.3"
   }
 }

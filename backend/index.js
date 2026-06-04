@@ -1,4 +1,3 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -9,10 +8,11 @@ app.use(express.json());
 app.use('/uploads', express.static('public/uploads'));
 const PORT = process.env.PORT || 4000;
 
-mongoose.connect(process.env.MONGO_URI).then(()=>console.log('mongo connected')).catch(e=>console.error(e));
-
-const Report = require('./models/Report');
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log('mongo connected'))
+  .catch((e) => console.error(e));
 
 app.use('/api/reports', require('./routes/reports'));
 
-app.listen(PORT, ()=>console.log('listening',PORT));
+app.listen(PORT, () => console.log('listening', PORT));

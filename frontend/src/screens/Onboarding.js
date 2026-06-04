@@ -1,5 +1,4 @@
-
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Button, Text, Alert } from 'react-native';
 import axios from 'axios';
 import { API_URL } from '../config';
@@ -7,7 +6,7 @@ import { API_URL } from '../config';
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function Onboarding({navigation}){
+export default function Onboarding({ navigation }) {
   const [address, setAddress] = useState('');
   const [moveIn, setMoveIn] = useState('');
   const [moveOut, setMoveOut] = useState('');
@@ -36,23 +35,48 @@ export default function Onboarding({navigation}){
       const res = await axios.post(`${API_URL}/reports`, { address, moveIn, moveOut, agentEmail });
       navigation.replace('RoomsList', { reportId: res.data._id });
     } catch (e) {
-      Alert.alert('Error', e.response?.data?.message || 'Failed to create report. Please try again.');
+      Alert.alert(
+        'Error',
+        e.response?.data?.message || 'Failed to create report. Please try again.',
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <View style={{padding:16}}>
+    <View style={{ padding: 16 }}>
       <Text>Property address</Text>
-      <TextInput value={address} onChangeText={setAddress} style={{borderWidth:1,marginBottom:8}} />
+      <TextInput
+        value={address}
+        onChangeText={setAddress}
+        style={{ borderWidth: 1, marginBottom: 8 }}
+      />
       <Text>Move-in date</Text>
-      <TextInput value={moveIn} onChangeText={setMoveIn} style={{borderWidth:1,marginBottom:8}} placeholder="YYYY-MM-DD" />
+      <TextInput
+        value={moveIn}
+        onChangeText={setMoveIn}
+        style={{ borderWidth: 1, marginBottom: 8 }}
+        placeholder="YYYY-MM-DD"
+      />
       <Text>Move-out date</Text>
-      <TextInput value={moveOut} onChangeText={setMoveOut} style={{borderWidth:1,marginBottom:8}} placeholder="YYYY-MM-DD" />
+      <TextInput
+        value={moveOut}
+        onChangeText={setMoveOut}
+        style={{ borderWidth: 1, marginBottom: 8 }}
+        placeholder="YYYY-MM-DD"
+      />
       <Text>Agent email</Text>
-      <TextInput value={agentEmail} onChangeText={setAgentEmail} style={{borderWidth:1,marginBottom:8}} />
-      <Button title={loading ? 'Creating...' : 'Create report'} onPress={create} disabled={loading} />
+      <TextInput
+        value={agentEmail}
+        onChangeText={setAgentEmail}
+        style={{ borderWidth: 1, marginBottom: 8 }}
+      />
+      <Button
+        title={loading ? 'Creating...' : 'Create report'}
+        onPress={create}
+        disabled={loading}
+      />
     </View>
   );
 }
