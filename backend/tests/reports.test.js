@@ -56,6 +56,21 @@ describe('Reports API', () => {
     expect(res.body.url).toContain('/uploads/');
   });
 
+  it('POST /api/reports/:id/photos - rejects when over free limit', async () => {
+    const report = await Report.findById(reportId);
+    report.rooms[0].photos = ['pic1', 'pic2', 'pic3'];
+    await report.save();
+
+    const res = await request(app)
+      .post(`/api/reports/${reportId}/photos`)
+      .attach('photo', Buffer.from('fake-image'), 'test.jpg');
+    expect(res.status).toBe(403);
+    expect(res.body.message).toContain('Free tier limited');
+
+    report.rooms[0].photos = [];
+    await report.save();
+  });
+
   it('GET /api/reports/:id - fetches a report', async () => {
     const res = await request(app).get(`/api/reports/${reportId}`);
     expect(res.status).toBe(200);

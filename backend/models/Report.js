@@ -14,6 +14,8 @@ const ReportSchema = new mongoose.Schema({
   moveOut: String,
   agentEmail: String,
   rooms: [RoomSchema],
+  paid: { type: Boolean, default: false },
+  stripeSessionId: String,
   createdAt: { type: Date, default: Date.now },
 });
 

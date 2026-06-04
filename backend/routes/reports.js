@@ -21,8 +21,19 @@ router.post('/:id/rooms', async (req, res) => {
 });
 
 // Upload photo
+const PHOTO_LIMIT_FREE = parseInt(process.env.PHOTO_LIMIT_FREE || '3', 10);
+
 router.post('/:id/photos', upload.single('photo'), async (req, res) => {
-  // simple example: upload to s3 and return url
+  const report = await Report.findById(req.params.id);
+  if (!report) return res.status(404).json({ message: 'Report not found' });
+
+  const totalPhotos = report.rooms.reduce((sum, r) => sum + (r.photos ? r.photos.length : 0), 0);
+  if (!report.paid && totalPhotos >= PHOTO_LIMIT_FREE) {
+    return res.status(403).json({
+      message: `Free tier limited to ${PHOTO_LIMIT_FREE} photos. Please upgrade to unlock unlimited uploads.`,
+    });
+  }
+
   const filePath = req.file.path;
   const key = `photos/${Date.now()}-${req.file.originalname}`;
   const url = await saveFile(filePath, key);

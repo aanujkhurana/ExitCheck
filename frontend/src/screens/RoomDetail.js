@@ -24,6 +24,10 @@ export default function RoomDetail({ route, navigation }) {
           body: form,
         });
         const json = await res.json();
+        if (!res.ok) {
+          Alert.alert('Photo Limit', json.message || 'Upload failed');
+          return;
+        }
         setPhotos([...photos, json.url]);
       } catch (e) {
         Alert.alert('Error', 'Failed to upload photo. Please try again.');
