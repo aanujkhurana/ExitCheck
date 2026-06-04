@@ -23,7 +23,7 @@
     "mongoose": "^7.0.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^8.0.10",
-    "puppeteer": "^21.3.6",
+    "puppeteer": "^24.43.1",
     "stripe": "^22.2.0"
   },
   "devDependencies": {
