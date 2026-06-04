@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, Button, ScrollView, Image, Alert, ActivityIndicator, Linking, RefreshControl } from 'react-native';
 import Toast from 'react-native-toast-message';
-import axios from 'axios';
+import api from '../api';
 import { API_URL } from '../config';
 
 export default function Summary({ route, navigation }) {
@@ -15,7 +15,7 @@ export default function Summary({ route, navigation }) {
 
   const fetchReport = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_URL}/reports/${reportId}`);
+      const res = await api.get(`/reports/${reportId}`);
       setReport(res.data);
     } catch (e) {
       setError('Failed to load report. Please go back and try again.');
@@ -31,7 +31,7 @@ export default function Summary({ route, navigation }) {
   const generate = async () => {
     setGenerating(true);
     try {
-      const res = await axios.post(`${API_URL}/reports/${reportId}/generate`);
+      const res = await api.post(`/reports/${reportId}/generate`);
       Toast.show({ type: 'success', text1: 'PDF generated', text2: res.data.url });
     } catch (e) {
       Alert.alert('Error', 'Failed to generate PDF. Please try again.');
@@ -43,7 +43,7 @@ export default function Summary({ route, navigation }) {
   const email = async () => {
     setEmailing(true);
     try {
-      await axios.post(`${API_URL}/reports/${reportId}/email`, { to: report.agentEmail });
+      await api.post(`/reports/${reportId}/email`, { to: report.agentEmail });
       Toast.show({ type: 'success', text1: 'Success', text2: 'Report emailed to agent' });
     } catch (e) {
       Alert.alert('Error', 'Failed to email report. Please try again.');
@@ -60,7 +60,7 @@ export default function Summary({ route, navigation }) {
         style: 'destructive',
         onPress: async () => {
           try {
-            await axios.delete(`${API_URL}/reports/${reportId}`);
+            await api.delete(`/reports/${reportId}`);
             navigation.goBack();
           } catch (e) {
             Alert.alert('Error', e.response?.data?.message || 'Failed to delete');
@@ -73,7 +73,7 @@ export default function Summary({ route, navigation }) {
   const upgrade = async () => {
     setPaying(true);
     try {
-      const res = await axios.post(`${API_URL}/reports/${reportId}/create-checkout-session`);
+      const res = await api.post(`/reports/${reportId}/create-checkout-session`);
       await Linking.openURL(res.data.url);
       Alert.alert('Payment', 'Complete payment in your browser, then come back and tap Refresh.');
     } catch (e) {

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { TextInput, Button, Text, Image, ScrollView, Alert } from 'react-native';
 import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../api';
 import { API_URL } from '../config';
 
 export default function RoomDetail({ route, navigation }) {
@@ -20,8 +21,10 @@ export default function RoomDetail({ route, navigation }) {
       try {
         const form = new FormData();
         form.append('photo', { uri: p.uri, name: 'photo.jpg', type: 'image/jpeg' });
+        const token = await AsyncStorage.getItem('@exitcheck_token');
         const res = await fetch(`${API_URL}/reports/${reportId}/photos`, {
           method: 'POST',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
           body: form,
         });
         const json = await res.json();
@@ -48,7 +51,7 @@ export default function RoomDetail({ route, navigation }) {
     }
     setSaving(true);
     try {
-      await axios.post(`${API_URL}/reports/${reportId}/rooms`, {
+      await api.post(`/reports/${reportId}/rooms`, {
         name: room.name || room,
         notes,
         condition,
