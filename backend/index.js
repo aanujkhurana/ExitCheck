@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
@@ -15,6 +16,7 @@ process.on('unhandledRejection', (err) => {
 });
 
 const app = express();
+app.use(compression());
 app.use(helmet());
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 
