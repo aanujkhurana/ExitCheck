@@ -41,12 +41,12 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use('/api/auth', authLimiter, authRouter);
-app.use('/api/', limiter);
-
 app.post('/api/reports/stripe-webhook', express.raw({ type: 'application/json' }), reportsRouter.stripeWebhook);
 
 app.use(express.json({ limit: '1mb' }));
+
+app.use('/api/auth', authLimiter, authRouter);
+app.use('/api/', limiter);
 app.use('/uploads', express.static('public/uploads'));
 
 app.use('/api/reports', reportsRouter);

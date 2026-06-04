@@ -9,6 +9,7 @@ const RoomSchema = new mongoose.Schema({
 });
 
 const ReportSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   address: { type: String, required: true, trim: true },
   moveIn: { type: String, required: true },
   moveOut: { type: String, required: true },

@@ -39,11 +39,11 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 - **Stripe webhook** — idempotency (in-memory dedup) + error handling
 
 ### Missing / Known Issues
-- **No per-user auth** — PIN is app-wide, no user accounts
-- **Dependency vulnerabilities** — `npm audit` shows 7 issues (2 moderate via aws-sdk, 5 high via puppeteer transitive deps)
+- **Dependency vulnerabilities** — `npm audit` shows 2 issues (moderate, via aws-sdk transitive deps)
 - **No TypeScript** — plain JS throughout
 - **No end-to-end tests** — only backend API + frontend logic tests
 - **No offline support** — requires network for all operations
+- **No frontend auth UI** — backend auth done, frontend login/register screens pending
 
 ## Conventions
 

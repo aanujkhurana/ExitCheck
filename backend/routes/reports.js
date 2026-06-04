@@ -12,15 +12,16 @@ const upload = multer({
   },
 });
 const { saveBuffer, generatePdf, sendEmailWithAttachment } = require('../utils/helpers');
+const { auth } = require('../middleware/auth');
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? require('stripe')(process.env.STRIPE_SECRET_KEY)
   : null;
 
 // Create report
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { address, moveIn, moveOut, agentEmail } = req.body;
-  const r = new Report({ address, moveIn, moveOut, agentEmail });
+  const r = new Report({ userId: req.userId, address, moveIn, moveOut, agentEmail });
   await r.save();
   res.status(201).json(r);
 });
@@ -34,8 +35,8 @@ router.get('/', async (req, res) => {
 });
 
 // Add room
-router.post('/:id/rooms', async (req, res) => {
-  const report = await Report.findById(req.params.id);
+router.post('/:id/rooms', auth, async (req, res) => {
+  const report = await Report.findOne({ _id: req.params.id, userId: req.userId });
   if (!report) return res.status(404).json({ message: 'Report not found' });
   const { name, notes, condition, photos } = req.body;
   report.rooms.push({ name, notes, condition, photos });
@@ -46,8 +47,8 @@ router.post('/:id/rooms', async (req, res) => {
 // Upload photo
 const PHOTO_LIMIT_FREE = parseInt(process.env.PHOTO_LIMIT_FREE || '3', 10);
 
-router.post('/:id/photos', upload.single('photo'), async (req, res) => {
-  const report = await Report.findById(req.params.id);
+router.post('/:id/photos', auth, upload.single('photo'), async (req, res) => {
+  const report = await Report.findOne({ _id: req.params.id, userId: req.userId });
   if (!report) return res.status(404).json({ message: 'Report not found' });
 
   const totalPhotos = report.rooms.reduce((sum, r) => sum + (r.photos ? r.photos.length : 0), 0);
@@ -71,8 +72,8 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update report
-router.put('/:id', async (req, res) => {
-  const report = await Report.findById(req.params.id);
+router.put('/:id', auth, async (req, res) => {
+  const report = await Report.findOne({ _id: req.params.id, userId: req.userId });
   if (!report) return res.status(404).json({ message: 'Report not found' });
   const { address, moveIn, moveOut, agentEmail } = req.body;
   if (address !== undefined) report.address = address;
@@ -84,16 +85,16 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete report
-router.delete('/:id', async (req, res) => {
-  const report = await Report.findByIdAndDelete(req.params.id);
+router.delete('/:id', auth, async (req, res) => {
+  const report = await Report.findOneAndDelete({ _id: req.params.id, userId: req.userId });
   if (!report) return res.status(404).json({ message: 'Report not found' });
   res.json({ ok: true });
 });
 
 // Delete room from report
-router.delete('/:id/rooms/:roomId', async (req, res) => {
-  const report = await Report.findByIdAndUpdate(
-    req.params.id,
+router.delete('/:id/rooms/:roomId', auth, async (req, res) => {
+  const report = await Report.findOneAndUpdate(
+    { _id: req.params.id, userId: req.userId },
     { $pull: { rooms: { _id: req.params.roomId } } },
     { new: true },
   );
@@ -111,17 +112,17 @@ router.get('/:id/export', async (req, res) => {
 });
 
 // Generate PDF
-router.post('/:id/generate', async (req, res) => {
-  const report = await Report.findById(req.params.id);
+router.post('/:id/generate', auth, async (req, res) => {
+  const report = await Report.findOne({ _id: req.params.id, userId: req.userId });
   const pdfUrl = await generatePdf(report);
   res.json({ url: pdfUrl });
 });
 
 // Create Stripe Checkout Session
-router.post('/:id/create-checkout-session', async (req, res) => {
+router.post('/:id/create-checkout-session', auth, async (req, res) => {
   if (!stripe) return res.status(503).json({ message: 'Stripe not configured' });
 
-  const report = await Report.findById(req.params.id);
+  const report = await Report.findOne({ _id: req.params.id, userId: req.userId });
   if (!report) return res.status(404).json({ message: 'Report not found' });
   if (report.paid) return res.status(400).json({ message: 'Already paid' });
 
@@ -174,8 +175,8 @@ router.stripeWebhook = async (req, res) => {
 };
 
 // Email PDF
-router.post('/:id/email', async (req, res) => {
-  const report = await Report.findById(req.params.id);
+router.post('/:id/email', auth, async (req, res) => {
+  const report = await Report.findOne({ _id: req.params.id, userId: req.userId });
   const { to } = req.body;
   const pdfUrl = await generatePdf(report);
   await sendEmailWithAttachment(to, pdfUrl);
