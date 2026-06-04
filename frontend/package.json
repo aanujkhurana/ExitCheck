@@ -15,7 +15,9 @@
     "transform": {
       "^.+\\.js$": "babel-jest"
     },
-    "transformIgnorePatterns": ["node_modules/(?!(.*\\.mjs)$)"]
+    "transformIgnorePatterns": [
+      "node_modules/(?!(.*\\.mjs)$)"
+    ]
   },
   "dependencies": {
     "@react-navigation/stack": "^7.6.7",
@@ -24,6 +26,7 @@
     "expo-image-picker": "^14.0.0",
     "react": "18.2.0",
     "react-native": "0.71.8",
+    "react-native-toast-message": "^2.3.3",
     "react-navigation": "^4.4.4"
   },
   "devDependencies": {

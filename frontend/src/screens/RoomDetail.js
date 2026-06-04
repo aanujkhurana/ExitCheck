@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TextInput, Button, Text, Image, ScrollView, Alert, Linking } from 'react-native';
+import { TextInput, Button, Text, Image, ScrollView, Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { API_URL } from '../config';
@@ -53,6 +54,7 @@ export default function RoomDetail({ route, navigation }) {
         condition,
         photos,
       });
+      Toast.show({ type: 'success', text1: 'Room saved' });
       navigation.goBack();
     } catch (e) {
       Alert.alert('Error', 'Failed to save room. Please try again.');

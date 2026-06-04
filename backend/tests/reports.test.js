@@ -1,7 +1,6 @@
 require('./setup');
 const request = require('supertest');
 const app = require('../index');
-const mongoose = require('mongoose');
 const Report = require('../models/Report');
 
 jest.mock('../utils/helpers', () => ({

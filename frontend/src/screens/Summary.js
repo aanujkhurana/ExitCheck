@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, Button, ScrollView, Image, Alert, ActivityIndicator, Linking } from 'react-native';
+import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import { API_URL } from '../config';
 
@@ -31,7 +32,7 @@ export default function Summary({ route }) {
     setGenerating(true);
     try {
       const res = await axios.post(`${API_URL}/reports/${reportId}/generate`);
-      Alert.alert('Success', 'PDF generated: ' + res.data.url);
+      Toast.show({ type: 'success', text1: 'PDF generated', text2: res.data.url });
     } catch (e) {
       Alert.alert('Error', 'Failed to generate PDF. Please try again.');
     } finally {
@@ -43,7 +44,7 @@ export default function Summary({ route }) {
     setEmailing(true);
     try {
       await axios.post(`${API_URL}/reports/${reportId}/email`, { to: report.agentEmail });
-      Alert.alert('Success', 'Report emailed to agent');
+      Toast.show({ type: 'success', text1: 'Success', text2: 'Report emailed to agent' });
     } catch (e) {
       Alert.alert('Error', 'Failed to email report. Please try again.');
     } finally {

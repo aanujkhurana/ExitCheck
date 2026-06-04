@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import { API_URL } from '../config';
 
@@ -33,6 +34,7 @@ export default function Onboarding({ navigation }) {
     setLoading(true);
     try {
       const res = await axios.post(`${API_URL}/reports`, { address, moveIn, moveOut, agentEmail });
+      Toast.show({ type: 'success', text1: 'Report created' });
       navigation.replace('RoomsList', { reportId: res.data._id });
     } catch (e) {
       Alert.alert(
