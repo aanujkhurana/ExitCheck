@@ -68,13 +68,27 @@ app.use((err, req, res, _next) => {
 
 const PORT = process.env.PORT || 4000;
 
+let server;
 if (process.env.NODE_ENV !== 'test') {
   const mongoose = require('mongoose');
   mongoose
     .connect(process.env.MONGO_URI)
     .then(() => console.log('mongo connected'))
     .catch((e) => console.error(e));
-  app.listen(PORT, () => console.log('listening', PORT));
+  server = app.listen(PORT, () => console.log('listening', PORT));
 }
+
+const gracefulShutdown = async (signal) => {
+  console.log(`\n${signal} received. Shutting down gracefully...`);
+  if (server) server.close();
+  if (process.env.NODE_ENV !== 'test') {
+    const mongoose = require('mongoose');
+    await mongoose.connection.close();
+  }
+  process.exit(0);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 module.exports = app;
