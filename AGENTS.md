@@ -30,6 +30,7 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 - **Email lookup** — `GET /?email=agent@...` returns all reports for that email
 - **Empty state** — `ListEmptyComponent` on RoomsList
 - **PIN auth** — `POST /api/auth/pin` endpoint + PinScreen, PIN set via `APP_PIN` env var
+- **User auth** — `POST /api/auth/register`, `POST /api/auth/login` + LoginScreen/RegisterScreen, reports scoped to user
 - **Rate limiting** — `express-rate-limit` (100 req/15min general, 10 req/15min auth)
 - **Helmet** — Security headers (XSS, clickjacking, etc.)
 - **Health check** — `GET /api/health`
@@ -43,7 +44,6 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 - **No TypeScript** — plain JS throughout
 - **No end-to-end tests** — only backend API + frontend logic tests
 - **No offline support** — requires network for all operations
-- **No frontend auth UI** — backend auth done, frontend login/register screens pending
 
 ## Conventions
 
