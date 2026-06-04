@@ -4,10 +4,15 @@ require('dotenv').config();
 
 const app = express();
 app.use(cors());
+
+const reportsRouter = require('./routes/reports');
+
+app.post('/api/reports/stripe-webhook', express.raw({ type: 'application/json' }), reportsRouter.stripeWebhook);
+
 app.use(express.json());
 app.use('/uploads', express.static('public/uploads'));
 
-app.use('/api/reports', require('./routes/reports'));
+app.use('/api/reports', reportsRouter);
 
 const PORT = process.env.PORT || 4000;
 

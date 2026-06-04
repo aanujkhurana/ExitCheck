@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, Button, Text, Image, ScrollView, Alert } from 'react-native';
+import { TextInput, Button, Text, Image, ScrollView, Alert, Linking } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { API_URL } from '../config';
@@ -25,7 +25,10 @@ export default function RoomDetail({ route, navigation }) {
         });
         const json = await res.json();
         if (!res.ok) {
-          Alert.alert('Photo Limit', json.message || 'Upload failed');
+          Alert.alert('Photo Limit', json.message || 'Upload failed', [
+            { text: 'OK' },
+            { text: 'Unlock unlimited', onPress: () => navigation.navigate('Summary', { reportId }) },
+          ]);
           return;
         }
         setPhotos([...photos, json.url]);
