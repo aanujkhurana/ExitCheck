@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@react-navigation/stack": "^7.6.7",
+    "@sentry/react-native": "^8.13.0",
     "axios": "^1.4.0",
     "expo": "~48.0.0",
     "expo-image-picker": "^14.0.0",

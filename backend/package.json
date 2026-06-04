@@ -12,6 +12,7 @@
     "testTimeout": 30000
   },
   "dependencies": {
+    "@sentry/node": "^10.56.0",
     "aws-sdk": "^2.1380.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
