@@ -61,6 +61,37 @@ router.get('/:id', async (req, res) => {
   res.json(report);
 });
 
+// Update report
+router.put('/:id', async (req, res) => {
+  const report = await Report.findById(req.params.id);
+  if (!report) return res.status(404).json({ message: 'Report not found' });
+  const { address, moveIn, moveOut, agentEmail } = req.body;
+  if (address !== undefined) report.address = address;
+  if (moveIn !== undefined) report.moveIn = moveIn;
+  if (moveOut !== undefined) report.moveOut = moveOut;
+  if (agentEmail !== undefined) report.agentEmail = agentEmail;
+  await report.save();
+  res.json(report);
+});
+
+// Delete report
+router.delete('/:id', async (req, res) => {
+  const report = await Report.findByIdAndDelete(req.params.id);
+  if (!report) return res.status(404).json({ message: 'Report not found' });
+  res.json({ ok: true });
+});
+
+// Delete room from report
+router.delete('/:id/rooms/:roomId', async (req, res) => {
+  const report = await Report.findByIdAndUpdate(
+    req.params.id,
+    { $pull: { rooms: { _id: req.params.roomId } } },
+    { new: true },
+  );
+  if (!report) return res.status(404).json({ message: 'Report not found' });
+  res.json(report);
+});
+
 // Generate PDF
 router.post('/:id/generate', async (req, res) => {
   const report = await Report.findById(req.params.id);

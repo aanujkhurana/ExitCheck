@@ -4,7 +4,7 @@ import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import { API_URL } from '../config';
 
-export default function Summary({ route }) {
+export default function Summary({ route, navigation }) {
   const { reportId } = route.params;
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -50,6 +50,24 @@ export default function Summary({ route }) {
     } finally {
       setEmailing(false);
     }
+  };
+
+  const remove = async () => {
+    Alert.alert('Delete report', 'This cannot be undone.', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await axios.delete(`${API_URL}/reports/${reportId}`);
+            navigation.goBack();
+          } catch (e) {
+            Alert.alert('Error', e.response?.data?.message || 'Failed to delete');
+          }
+        },
+      },
+    ]);
   };
 
   const upgrade = async () => {
@@ -114,6 +132,9 @@ export default function Summary({ route }) {
         onPress={email}
         disabled={emailing || !report.agentEmail}
       />
+      <View style={{ marginTop: 24 }}>
+        <Button title="Delete report" onPress={remove} color="#c00" />
+      </View>
     </ScrollView>
   );
 }
