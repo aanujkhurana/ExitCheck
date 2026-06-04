@@ -17,7 +17,10 @@
     },
     "transformIgnorePatterns": [
       "node_modules/(?!(.*\\.mjs)$)"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^expo-constants$": "<rootDir>/src/__mocks__/expo-constants.js"
+    }
   },
   "dependencies": {
     "@react-navigation/stack": "^7.6.7",

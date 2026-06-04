@@ -7,7 +7,9 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "backgroundColor": "#ffffff"
+      "image": "./assets/splash.png",
+      "backgroundColor": "#ffffff",
+      "resizeMode": "contain"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -31,6 +33,10 @@
           "cameraPermission": "ExitCheck needs camera access to take room photos."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "apiUrl": "http://localhost:4000/api",
+      "sentryDsn": ""
+    }
   }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Button, ScrollView, Image, Alert, ActivityIndicator, Linking } from 'react-native';
+import { View, Text, Button, ScrollView, Image, Alert, ActivityIndicator, Linking, RefreshControl } from 'react-native';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import { API_URL } from '../config';
@@ -75,7 +75,10 @@ export default function Summary({ route }) {
     );
   if (!report) return null;
   return (
-    <ScrollView style={{ padding: 16 }}>
+    <ScrollView
+      style={{ padding: 16 }}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchReport} />}
+    >
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Summary</Text>
       <Text>{report.address}</Text>
       {!report.paid && (
