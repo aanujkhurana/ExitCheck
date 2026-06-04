@@ -18,10 +18,16 @@ ExitCheck is a **React Native (Expo) + Express** mobile app for generating renta
 - **Error handling** — try/catch on all API calls, user-facing Alert messages, loading states with disabled buttons
 - **Local storage fallback** — `STORAGE_TYPE=local` env var; saves files to `backend/public/uploads/` when S3 not configured
 - **Backend deps installed**
+- **Photo upload limit** — 3 photo free tier with Stripe unlock
+- **Stripe payments** — Checkout session + webhook for unlimited photos
+- **Toast notifications** — `react-native-toast-message` for success feedback
+- **Sentry** — Error tracking on both frontend and backend
+- **ESLint + Prettier** — Configured for both projects
+- **CI** — GitHub Actions workflow (lint + test)
+- **EAS** — Expo build config for iOS/Android
 
 ### Missing / Known Issues
-- **Paywall** — README mentions Stripe/free tier (3 photos), but no enforcement exists
-- **Photo upload limit** — no frontend or backend limit on photo count
+- **No auth** — no user accounts, anyone with report ID can access (critical)
 - **No tests** — zero test infrastructure
 - **No linting/formatting** — no ESLint, Prettier, or equivalent
 
