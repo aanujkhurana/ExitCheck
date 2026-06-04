@@ -8,6 +8,7 @@ import Onboarding from './src/screens/Onboarding';
 import RoomsList from './src/screens/RoomsList';
 import RoomDetail from './src/screens/RoomDetail';
 import Summary from './src/screens/Summary';
+import PinScreen from './src/screens/PinScreen';
 
 const sentryDsn = Constants.expoConfig?.extra?.sentryDsn;
 if (sentryDsn) {
@@ -22,7 +23,8 @@ const Stack = createStackNavigator();
 const App = () => (
   <>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Onboarding">
+      <Stack.Navigator initialRouteName="Pin">
+        <Stack.Screen name="Pin" component={PinScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={Onboarding} />
         <Stack.Screen name="RoomsList" component={RoomsList} />
         <Stack.Screen name="RoomDetail" component={RoomDetail} />

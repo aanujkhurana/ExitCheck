@@ -20,6 +20,9 @@ if (process.env.SENTRY_DSN) {
 }
 
 const reportsRouter = require('./routes/reports');
+const authRouter = require('./routes/auth');
+
+app.use('/api/auth', authRouter);
 
 app.post('/api/reports/stripe-webhook', express.raw({ type: 'application/json' }), reportsRouter.stripeWebhook);
 
