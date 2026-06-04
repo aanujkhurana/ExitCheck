@@ -1,6 +1,6 @@
 
 import React, {useState} from 'react';
-import { View, TextInput, Button, Text, Image, ScrollView } from 'react-native';
+import { View, TextInput, Button, Text, Image, ScrollView, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { API_URL } from '../config';
@@ -14,7 +14,6 @@ export default function RoomDetail({route, navigation}){
   const pick = async () => {
     const p = await ImagePicker.launchCameraAsync({ quality:0.5, base64:false });
     if(!p.cancelled){
-      // upload to backend
       const form = new FormData();
       form.append('photo',{ uri: p.uri, name: 'photo.jpg', type: 'image/jpeg' });
       const res = await fetch(`${API_URL}/reports/${reportId}/photos`, { method:'POST', body: form });
@@ -24,6 +23,10 @@ export default function RoomDetail({route, navigation}){
   };
 
   const save = async () => {
+    if (!condition.trim()) {
+      Alert.alert('Validation Error', 'Condition is required');
+      return;
+    }
     await axios.post(`${API_URL}/reports/${reportId}/rooms`, { name: room.name || room, notes, condition, photos });
     navigation.goBack();
   };
