@@ -42,6 +42,11 @@ export default function RoomsList({ route, navigation }) {
       <FlatList
         data={rooms}
         keyExtractor={(i) => i.id}
+        ListEmptyComponent={
+          <Text style={{ textAlign: 'center', marginTop: 24, color: '#888' }}>
+            No rooms yet. Add a room above.
+          </Text>
+        }
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => goRoom(item)}>
             <View style={{ padding: 12, borderBottomWidth: 1 }}>
