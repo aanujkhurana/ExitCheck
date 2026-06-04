@@ -10,15 +10,24 @@ export default function RoomDetail({route, navigation}){
   const [notes, setNotes] = useState('');
   const [condition, setCondition] = useState('clean');
   const [photos, setPhotos] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const pick = async () => {
     const p = await ImagePicker.launchCameraAsync({ quality:0.5, base64:false });
     if(!p.cancelled){
-      const form = new FormData();
-      form.append('photo',{ uri: p.uri, name: 'photo.jpg', type: 'image/jpeg' });
-      const res = await fetch(`${API_URL}/reports/${reportId}/photos`, { method:'POST', body: form });
-      const json = await res.json();
-      setPhotos([...photos, json.url]);
+      setUploading(true);
+      try {
+        const form = new FormData();
+        form.append('photo',{ uri: p.uri, name: 'photo.jpg', type: 'image/jpeg' });
+        const res = await fetch(`${API_URL}/reports/${reportId}/photos`, { method:'POST', body: form });
+        const json = await res.json();
+        setPhotos([...photos, json.url]);
+      } catch (e) {
+        Alert.alert('Error', 'Failed to upload photo. Please try again.');
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -27,8 +36,15 @@ export default function RoomDetail({route, navigation}){
       Alert.alert('Validation Error', 'Condition is required');
       return;
     }
-    await axios.post(`${API_URL}/reports/${reportId}/rooms`, { name: room.name || room, notes, condition, photos });
-    navigation.goBack();
+    setSaving(true);
+    try {
+      await axios.post(`${API_URL}/reports/${reportId}/rooms`, { name: room.name || room, notes, condition, photos });
+      navigation.goBack();
+    } catch (e) {
+      Alert.alert('Error', 'Failed to save room. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -38,9 +54,9 @@ export default function RoomDetail({route, navigation}){
       <TextInput value={condition} onChangeText={setCondition} style={{borderWidth:1,marginBottom:8}} />
       <Text>Notes</Text>
       <TextInput value={notes} onChangeText={setNotes} style={{borderWidth:1,marginBottom:8}} multiline />
-      <Button title="Take photo" onPress={pick} />
+      <Button title={uploading ? 'Uploading...' : 'Take photo'} onPress={pick} disabled={uploading} />
       {photos.map((uri,i)=> <Image key={i} source={{uri}} style={{height:150,marginTop:8}} />)}
-      <Button title="Save room" onPress={save} />
+      <Button title={saving ? 'Saving...' : 'Save room'} onPress={save} disabled={saving} />
     </ScrollView>
   );
 }

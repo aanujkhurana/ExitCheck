@@ -12,6 +12,7 @@ export default function Onboarding({navigation}){
   const [moveIn, setMoveIn] = useState('');
   const [moveOut, setMoveOut] = useState('');
   const [agentEmail, setAgentEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     if (!address.trim()) return 'Property address is required';
@@ -30,8 +31,15 @@ export default function Onboarding({navigation}){
       Alert.alert('Validation Error', error);
       return;
     }
-    const res = await axios.post(`${API_URL}/reports`, { address, moveIn, moveOut, agentEmail });
-    navigation.replace('RoomsList', { reportId: res.data._id });
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API_URL}/reports`, { address, moveIn, moveOut, agentEmail });
+      navigation.replace('RoomsList', { reportId: res.data._id });
+    } catch (e) {
+      Alert.alert('Error', e.response?.data?.message || 'Failed to create report. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,7 +52,7 @@ export default function Onboarding({navigation}){
       <TextInput value={moveOut} onChangeText={setMoveOut} style={{borderWidth:1,marginBottom:8}} placeholder="YYYY-MM-DD" />
       <Text>Agent email</Text>
       <TextInput value={agentEmail} onChangeText={setAgentEmail} style={{borderWidth:1,marginBottom:8}} />
-      <Button title="Create report" onPress={create} />
+      <Button title={loading ? 'Creating...' : 'Create report'} onPress={create} disabled={loading} />
     </View>
   );
 }

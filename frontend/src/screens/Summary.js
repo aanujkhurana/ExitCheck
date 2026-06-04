@@ -1,31 +1,56 @@
 
 import React, {useEffect, useState} from 'react';
-import { View, Text, Button, ScrollView, Image } from 'react-native';
+import { View, Text, Button, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import { API_URL } from '../config';
 
 export default function Summary({route}){
   const { reportId } = route.params;
   const [report, setReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [emailing, setEmailing] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(()=>{
     (async ()=>{
-      const res = await axios.get(`${API_URL}/reports/${reportId}`);
-      setReport(res.data);
+      try {
+        const res = await axios.get(`${API_URL}/reports/${reportId}`);
+        setReport(res.data);
+      } catch (e) {
+        setError('Failed to load report. Please go back and try again.');
+      } finally {
+        setLoading(false);
+      }
     })();
   },[]);
 
   const generate = async () => {
-    const res = await axios.post(`${API_URL}/reports/${reportId}/generate`);
-    // res.data.url is PDF
-    alert('PDF generated: ' + res.data.url);
+    setGenerating(true);
+    try {
+      const res = await axios.post(`${API_URL}/reports/${reportId}/generate`);
+      Alert.alert('Success', 'PDF generated: ' + res.data.url);
+    } catch (e) {
+      Alert.alert('Error', 'Failed to generate PDF. Please try again.');
+    } finally {
+      setGenerating(false);
+    }
   };
 
   const email = async () => {
-    await axios.post(`${API_URL}/reports/${reportId}/email`, { to: report.agentEmail });
-    alert('Emailed to agent');
+    setEmailing(true);
+    try {
+      await axios.post(`${API_URL}/reports/${reportId}/email`, { to: report.agentEmail });
+      Alert.alert('Success', 'Report emailed to agent');
+    } catch (e) {
+      Alert.alert('Error', 'Failed to email report. Please try again.');
+    } finally {
+      setEmailing(false);
+    }
   };
 
+  if (loading) return <ActivityIndicator size="large" style={{marginTop:40}} />;
+  if (error) return <View style={{padding:16}}><Text>{error}</Text></View>;
   if(!report) return null;
   return (
     <ScrollView style={{padding:16}}>
@@ -39,8 +64,8 @@ export default function Summary({route}){
           {r.photos && r.photos.map((p,pi)=>(<Image key={pi} source={{uri:p}} style={{height:120,marginTop:8}} />))}
         </View>
       ))}
-      <Button title="Generate PDF" onPress={generate} />
-      <Button title="Email agent" onPress={email} />
+      <Button title={generating ? 'Generating...' : 'Generate PDF'} onPress={generate} disabled={generating} />
+      <Button title={emailing ? 'Emailing...' : 'Email agent'} onPress={email} disabled={emailing || !report.agentEmail} />
     </ScrollView>
   );
 }
