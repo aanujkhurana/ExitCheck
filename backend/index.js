@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const Sentry = require('@sentry/node');
@@ -22,7 +23,22 @@ if (process.env.SENTRY_DSN) {
 const reportsRouter = require('./routes/reports');
 const authRouter = require('./routes/auth');
 
-app.use('/api/auth', authRouter);
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/auth', authLimiter, authRouter);
+app.use('/api/', limiter);
 
 app.post('/api/reports/stripe-webhook', express.raw({ type: 'application/json' }), reportsRouter.stripeWebhook);
 
